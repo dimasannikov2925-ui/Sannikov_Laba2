@@ -1,40 +1,33 @@
 ﻿#include <iostream> 
 #include <string> 
 #include <fstream>
-struct KC
-{
-    std::string nameKC;
-    int kolvozehKC;
-    int zehrabotKC;
-    int clasKC;
-};
-struct Pipe
-{
-    std::string namepipe;
-    double dlinapipe;
-    int mmpipe;
-    bool remontpipe;
-};
+#include "Pipe.h"
+#include "KC.h"
+
 
 void redactpipe(Pipe& pipe)
 {
+    bool remont=false;
     std::cout << "\nV Remonte? Yes-1 / No-0: ";
-    while (!(std::cin >> pipe.remontpipe) || (std::cin.peek() != '\n'))
+    while (!(std::cin >> remont) || (std::cin.peek() != '\n'))
     {
         std::cout << "\nV Remonte? Yes-1 / No-0: ";
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    pipe.SetRemontpipe(remont);
 }
 void redactkc(KC& kc)
 {
+    int rabot = 0;
     std::cout << "\nRead kol-vo rabot ZEH in KC: ";
-    while (!(std::cin >> kc.zehrabotKC) || (std::cin.peek() != '\n') || (kc.zehrabotKC < 0) || (kc.zehrabotKC > kc.kolvozehKC))
+    while (!(std::cin >> rabot) || (std::cin.peek() != '\n') || (rabot < 0) || (rabot > kc.kolvozehKC))
     {
         std::cout << "No! Read Kol-vo ZEH v Pabote: ";
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    kc.Setzehrabot(rabot);
 }
 
 
@@ -88,13 +81,13 @@ void showpipe(Pipe& pipe)
     std::cout << "\n---Pipe---\n" << "Name:" << pipe.namepipe << "\n";
     std::cout << "Dlina(km): " << pipe.dlinapipe << "\n";
     std::cout << "Diametr(mm): " << pipe.mmpipe << "\n";
-    std::cout << "V remonte (1-Yes, 0-No): " << pipe.remontpipe << "\n";
+    std::cout << "V remonte (1-Yes, 0-No): " << pipe.GetRemontpipe() << "\n"; 
 }
 void showkc(KC& kc)
 {
     std::cout << "\n---KC---\n" << "Name: " << kc.nameKC << "\n";
     std::cout << "Kol-vo zehov:" << kc.kolvozehKC << "\n";
-    std::cout << "Kol-vo zehov B PaboTe :" << kc.zehrabotKC << "\n";
+    std::cout << "Kol-vo zehov B PaboTe :" << kc.Getzehrabot() << "\n"; 
     std::cout << "Class CTaHzuu:" << kc.clasKC << "\n";
 }
 void menu()
@@ -116,7 +109,7 @@ void savefilepipe(std::ofstream& fout, Pipe& pipe)
         fout << pipe.namepipe << "\n";
         fout << pipe.dlinapipe << "\n";
         fout << pipe.mmpipe << "\n";
-        fout << pipe.remontpipe << "\n";
+        fout << pipe.GetRemontpipe() << "\n";
     }
 
 }
@@ -128,27 +121,31 @@ void savefileKC(std::ofstream& fout, KC& kc)
         fout << "KC\n";
         fout << kc.nameKC << "\n";
         fout << kc.kolvozehKC << "\n";
-        fout << kc.zehrabotKC << "\n";
+        fout << kc.Getzehrabot() << "\n";
         fout << kc.clasKC << "\n";
     }
 }
 
 void openfilepipe(std::ifstream& fin, Pipe& pipe)
 {
+    bool remont = false;
     std::getline(fin, pipe.namepipe);
     fin >> pipe.dlinapipe;
     fin >> pipe.mmpipe;
-    fin >> pipe.remontpipe;
+    fin >> remont;
     fin.ignore(10000, '\n');
+    pipe.SetRemontpipe(remont);
 
 }
 
 void openfileKC(std::ifstream& fin, KC& kc)
 {
+    int rabot = 0;
     std::getline(fin, kc.nameKC);
     fin >> kc.kolvozehKC;
-    fin >> kc.zehrabotKC;
+    fin >> rabot;
     fin >> kc.clasKC;
+    kc.Setzehrabot(rabot);
 }
 
 int main()
