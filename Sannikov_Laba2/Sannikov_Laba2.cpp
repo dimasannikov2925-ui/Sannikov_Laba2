@@ -3,7 +3,7 @@
 #include <fstream>
 #include "Pipe.h"
 #include "KC.h"
-
+#include <map>
 
 void redactpipe(Pipe& pipe)
 {
@@ -99,6 +99,8 @@ void menu()
     std::cout << "5.Redact KC\n";
     std::cout << "6.Save\n";
     std::cout << "7.Open\n";
+    std::cout << "8.Delete Pipe\n";
+    std::cout << "9.Delete KC\n";
     std::cout << "0.Exit\n";
 }
 void savefilepipe(std::ofstream& fout, Pipe& pipe)
@@ -152,6 +154,10 @@ int main()
 {
     Pipe pipe{};
     KC kc{};
+    std::map<int, Pipe> pipes;
+    std::map<int, KC> kcs;
+    int PipeID = 1;
+    int KCID = 1;
     char vvod;
     while (true)
     {
@@ -161,12 +167,12 @@ int main()
             std::cout << "\nInput: ";
             std::cin >> vvod;
 
-            if ((vvod >= '0') && (vvod <= '7') && (std::cin.peek() == '\n'))
+            if ((vvod >= '0') && (vvod <= '9') && (std::cin.peek() == '\n'))
             {
                 break;
             }
 
-            std::cout << "Input int 0-7: ";
+            std::cout << "Input int 0-9: ";
             std::cin.clear();
             std::cin.ignore(10000, '\n');
         }
@@ -175,28 +181,52 @@ int main()
         {
         case '1':
         {
-            readconsolpipe(pipe);
+            Pipe newPipe{};
+            readconsolpipe(newPipe);
+            pipes.emplace(PipeID, newPipe);
+            PipeID++;
             break;
         }
         case '2':
         {
-            readconsolkc(kc);
+            KC newKC{};
+            readconsolkc(newKC);
+            kcs.emplace(KCID, newKC);
+            KCID++;
             break;
         }
         case '3':
         {
-            if (pipe.dlinapipe > 0)
+            if (!pipes.empty())
             {
-                showpipe(pipe);
+                for (int i = 0; i <= PipeID; i++)
+                {
+                    if (pipes.find(i)!=pipes.end())
+                    {
+                        std::cout << "ID Pipe: " << i << "\n";
+                        showpipe(pipes.at(i));
+                    }
+                    else
+                        continue;
+                }
             }
             else
             {
                 std::cout << "Pipe have not!\n";
             }
-            if (kc.kolvozehKC > 0)
+            if (!kcs.empty())
             {
-                showkc(kc);
-            }
+                for (int i = 1;i <= KCID;i++)
+                {
+                    if (kcs.find(i) != kcs.end())
+                    {
+                        std::cout << "ID KC: " << i << "\n";
+                        showkc(kcs.at(i));
+                    }
+                    else
+                        continue;
+                }
+            }           
             else
             {
                 std::cout << "KC have not!\n";
@@ -205,9 +235,28 @@ int main()
         }
         case '4':
         {
-            if (pipe.dlinapipe > 0)
+            if (!pipes.empty())
             {
-                redactpipe(pipe);
+                int vvodID;
+                while (true)
+                {
+                    std::cout << "\nInput ID: ";
+                    if ((std::cin >> vvodID) && (vvodID > 0) && (std::cin.peek() == '\n'))
+                    {
+                        break;
+                    }
+                    std::cin.clear();
+                    std::cin.ignore(10000, '\n');
+                }
+                if (pipes.find(vvodID) != pipes.end())
+                {
+                    std::cout << "ID Pipe: " << vvodID << "\n";
+                    redactpipe(pipes.at(vvodID));
+                }
+                else
+                {
+                    std::cout << "HeT Takogo ID!\n";
+                }
             }
             else
             {
@@ -217,9 +266,28 @@ int main()
         }
         case '5':
         {
-            if (kc.kolvozehKC > 0)
+            if (!kcs.empty())
             {
-                redactkc(kc);
+                int vvodID;
+                while (true)
+                {
+                    std::cout << "\nInput ID: ";
+                    if ((std::cin >> vvodID) && (vvodID > 0) && (std::cin.peek() == '\n'))
+                    {
+                        break;
+                    }
+                    std::cin.clear();
+                    std::cin.ignore(10000, '\n');
+                }
+                if (kcs.find(vvodID) != kcs.end())
+                {
+                    std::cout << "ID KC: " << vvodID << "\n";
+                    redactkc(kcs.at(vvodID));
+                }
+                else
+                {
+                    std::cout << "HeT Takogo ID!\n";
+                }
             }
             else
             {
@@ -227,6 +295,7 @@ int main()
             }
             break;
         }
+       
         case '6':
         {
             std::ofstream fout("file.txt");
@@ -261,6 +330,56 @@ int main()
             }
             break;
         }
+        case '8':
+        {
+            int vvodID;
+            
+            while (true)
+            {
+                std::cout << "HoMep ID: ";
+                if ((std::cin >> vvodID) && (vvodID > 0) && (std::cin.peek() == '\n'))
+                {
+                    if (pipes.erase(vvodID) == 1)
+                    {
+                        std::cout << "Pipe" << vvodID << "delete\n";
+                    }
+                    else
+                    {
+                        std::cout << "Pipe not this ID\n";
+                    }
+                    break;
+                }
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+            }
+            
+            break;
+        }
+        case '9':
+        {
+            int vvodID;
+            while (true)
+            {
+                std::cout << "HoMep ID: ";
+                if ((std::cin >> vvodID) && (vvodID > 0) && (std::cin.peek() == '\n'))
+                {
+                    if (kcs.erase(vvodID) == 1)
+                    {
+                        std::cout << "KC" << vvodID << "delete\n";
+                    }
+                    else
+                    {
+                        std::cout << "KC not this ID\n";
+                    }
+                    break;
+                }
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+            }
+         
+            break;
+            
+        }
         case '0':
         {
             std::cout << "\n\nBye Bye!\n\n";
@@ -268,7 +387,7 @@ int main()
         }
         default:
         {
-            std::cout << "No command, input OT 0 do 7.\n";
+            std::cout << "No command, input OT 0 do 9.\n";
             break;
         }
         }
