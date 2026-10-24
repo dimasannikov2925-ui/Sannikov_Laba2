@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Sannikov_Laba2/Sannikov_Laba2.vcxproj" />
+  <Project Path="Sannikov_Laba2/Sannikov_Laba2.vcxproj" Id="57628e48-a238-4a72-8691-4362d3f52c26" />
 </Solution>

@@ -140,11 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="KC.cpp" />
+    <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Sannikov_Laba2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KC.h" />
+    <ClInclude Include="Manager.h" />
     <ClInclude Include="Pipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
