@@ -5,9 +5,20 @@
 #include "KC.h"
 #include <map>
 #include "Manager.h"
-
+#include "Logger.h"
 int main()
 {
+    std::ofstream logfile("log.txt", std::ios::app);
+    Logger log(std::cerr);
+    if (logfile)
+    {
+        log.vFile(logfile);
+        std::cerr << "Program start\n";
+    }
+    else
+    {
+        std::cout << "Log file ERROR!!\n";
+    }
     Pipe pipe{};
     KC kc{};
     std::map<int, Pipe> pipes;
@@ -28,7 +39,7 @@ int main()
                 break;
             }
 
-            std::cout << "Input int 0-9: ";
+            std::cout << "Input int 0-9, a/b: ";
             std::cin.clear();
             std::cin.ignore(10000, '\n');
         }
@@ -40,6 +51,7 @@ int main()
             Pipe newPipe{};
             readconsolpipe(newPipe);
             pipes.emplace(PipeID, newPipe);
+            std::cerr << "Pipe created Pipe-ID:  " << PipeID << "\n";
             PipeID++;
             break;
         }
@@ -48,6 +60,7 @@ int main()
             KC newKC{};
             readconsolkc(newKC);
             kcs.emplace(KCID, newKC);
+            std::cerr << "KC created KC-ID:  " << KCID << "\n";
             KCID++;
             break;
         }
@@ -55,15 +68,10 @@ int main()
         {
             if (!pipes.empty())
             {
-                for (int i = 0; i <= PipeID; i++)
+                for (auto& item : pipes)
                 {
-                    if (pipes.find(i)!=pipes.end())
-                    {
-                        std::cout << "ID Pipe: " << i << "\n";
-                        showpipe(pipes.at(i));
-                    }
-                    else
-                        continue;
+                    std::cout << "ID Pipe: " << item.first << "\n";
+                    showpipe(item.second);
                 }
             }
             else
@@ -72,15 +80,10 @@ int main()
             }
             if (!kcs.empty())
             {
-                for (int i = 1;i <= KCID;i++)
+                for (auto& item : kcs)
                 {
-                    if (kcs.find(i) != kcs.end())
-                    {
-                        std::cout << "ID KC: " << i << "\n";
-                        showkc(kcs.at(i));
-                    }
-                    else
-                        continue;
+                    std::cout << "ID KC: " << item.first << "\n";
+                    showkc(item.second);
                 }
             }           
             else
@@ -93,6 +96,11 @@ int main()
         {
             if (!pipes.empty())
             {
+                std::cout << "\nPipe ID:\n";
+                for (auto& item : pipes)
+                {
+                    std::cout << "ID: " << item.first << " Name: " << item.second.namepipe << "\n";
+                }
                 int vvodID;
                 while (true)
                 {
@@ -108,6 +116,7 @@ int main()
                 {
                     std::cout << "ID Pipe: " << vvodID << "\n";
                     redactpipe(pipes.at(vvodID));
+                    std::cerr << "Pipe redact, ID: " << vvodID << "Remont: " << pipes.at(vvodID).GetRemontpipe() << "\n";
                 }
                 else
                 {
@@ -124,6 +133,13 @@ int main()
         {
             if (!kcs.empty())
             {
+                std::cout << "\nInput ID:\n";
+
+                for (auto& item : kcs)
+                {
+                    std::cout << "KC ID: " << item.first << " Name: " << item.second.nameKC << "\n";
+                }
+
                 int vvodID;
                 while (true)
                 {
@@ -139,6 +155,7 @@ int main()
                 {
                     std::cout << "ID KC: " << vvodID << "\n";
                     redactkc(kcs.at(vvodID));
+                    std::cerr << "KC redact, ID: " << vvodID << "B PaboTe:  " << kcs.at(vvodID).Getzehrabot() << "\n";
                 }
                 else
                 {
@@ -158,12 +175,17 @@ int main()
 
             std::cout << "Input filename: ";
             std::cin >> filename;
-
+            if (filename == "log.txt")
+            {
+                std::cout << "NO! This LOG file!!!\n";
+                break;
+            }
             std::ofstream fout(filename);
 
             if (!fout)
             {
                 std::cout << "File error!\n";
+                std::cerr << "ERROR! File not open: " << filename << "\n";
                 break;
             }
 
@@ -176,8 +198,25 @@ int main()
             {
                 savefileKC(fout, item.second, item.first);
             }
+
+            fout.close();
+
+            if (fout)
+            {
+                std::cout << "File saved!\n";
+                std::cerr << "File saved: " << filename
+                    << " Pipes: " << pipes.size()
+                    << " KC: " << kcs.size() << "\n";
+            }
+            else
+            {
+                std::cout << "File save error!\n";
+                std::cerr << "ERROR! File not saved: " << filename << "\n";
+            }
+
             break;
         }
+
         case '7':
         {
             std::string filename;
@@ -190,53 +229,141 @@ int main()
             if (!fin)
             {
                 std::cout << "File broyek\n";
+                std::cerr << "ERROR! File not open: " << filename << "\n";
                 break;
             }
 
+            std::cerr << "File loading: " << filename << "\n";
+
             std::string proverka;
+            bool error = false;
+            std::map<int, Pipe> newPipes;
+            std::map<int, KC> newKcs;
+            int newPipeID = PipeID;
+            int newKCID = KCID;
             while (std::getline(fin, proverka))
             {
                 if (proverka == "KC")
                 {
                     int id;
-                    fin >> id;
+
+                    if (!(fin >> id) || id <= 0)
+                    {
+                        error = true;
+                        break;
+                    }
+
                     fin.ignore(10000, '\n');
 
                     KC newKC{};
                     openfileKC(fin, newKC);
 
-                    kcs[id] = newKC;
+                    if (!fin || newKC.nameKC.empty() || newKC.kolvozehKC <= 0 || newKC.clasKC <= 0 || newKcs.find(id) != newKcs.end())
+                    {
+                        error = true;
+                        break;
+                    }
 
-                    if (id >= KCID)
-                        KCID = id + 1;
+                    newKcs[id] = newKC;
+
+                    if (id >= newKCID)
+                        newKCID = id + 1;
                 }
                 else if (proverka == "PIPE")
                 {
                     int id;
-                    fin >> id;
+
+                    if (!(fin >> id) || id <= 0)
+                    {
+                        error = true;
+                        break;
+                    }
+
                     fin.ignore(10000, '\n');
 
                     Pipe newPipe{};
                     openfilepipe(fin, newPipe);
 
-                    pipes[id] = newPipe;
+                    if (!fin || newPipe.namepipe.empty() || newPipe.dlinapipe <= 0 || newPipe.mmpipe <= 0 || newPipes.find(id) != newPipes.end())
+                    {
+                        error = true;
+                        break;
+                    }
 
-                    if (id >= PipeID)
-                        PipeID = id + 1;
+                    newPipes[id] = newPipe;
+
+                    if (id >= newPipeID)
+                        newPipeID = id + 1;
+                }
+                else if (!proverka.empty())
+                {
+                    error = true;
+                    break;
                 }
             }
+
+            if (fin.bad())
+            {
+                error = true;
+            }
+
+            if (error)
+            {
+                std::cout << "File load error!\n";
+                std::cerr << "ERROR! File broyek when loading: "
+                    << filename << "\n";
+            }
+            else
+            {
+                for (auto& item : newPipes)
+                    pipes[item.first] = item.second;
+
+                for (auto& item : newKcs)
+                    kcs[item.first] = item.second;
+
+                PipeID = newPipeID;
+                KCID = newKCID;
+                std::cout << "File loaded!\n";
+                std::cerr << "File loaded: " << filename << " Pipes: " << pipes.size() << " KC: " << kcs.size() << "\n";
+            }
+
             break;
         }
         case '8':
         {
+            if (pipes.empty())
+            {
+                std::cout << "Pipe have not!\n";
+                break;
+            }
+
+            std::cout << "\nPipe ID:\n";
+            for (auto& item : pipes)
+            {
+                std::cout << "ID: " << item.first
+                    << " Name: " << item.second.namepipe << "\n";
+            }
+
             deletePipeID(pipes);
             break;
         }
         case '9':
         {
+            if (kcs.empty())
+            {
+                std::cout << "KC have not!\n";
+                break;
+            }
+
+            std::cout << "\nKC ID:\n";
+            for (auto& item : kcs)
+            {
+                std::cout << "ID: " << item.first
+                    << " Name: " << item.second.nameKC << "\n";
+            }
+
             deleteKCID(kcs);
             break;
-            
         }
         case 'a':
         {
@@ -251,6 +378,8 @@ int main()
         case '0':
         {
             std::cout << "\n\nBye Bye!\n\n";
+            std::cerr << "Program closed";
+            std::cerr << "\n\nBye Bye!\n\n";
             return 0;
         }
         default:

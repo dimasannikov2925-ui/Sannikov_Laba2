@@ -1,0 +1,20 @@
+Program start
+Program start
+Pipe created Pipe-ID:  1
+Pipe created Pipe-ID:  2
+KC created KC-ID:  1
+KC created KC-ID:  2
+Poisk KC for Name: 2, found: 1
+KC changed! ID: 2 Working: 21
+Pipe delete! PipeID: 1
+ERROR! File not open: data.txt
+File saved: data.txt Pipes: 1 KC: 2
+KC delete! KcID: 1
+File loading: data.txt
+File loaded: data.txt Pipes: 1 KC: 2
+Program closed
+
+Bye Bye!
+
+Program start
+Program start

@@ -12,13 +12,16 @@ void  deletePipeID(std::map<int, Pipe>& pipes)
             if (pipes.erase(vvodID) == 1)
             {
                 std::cout << "Pipe" << vvodID << "delete\n";
+                std::cerr << "Pipe delete! PipeID: " << vvodID << "\n";
             }
             else
             {
                 std::cout << "Pipe not this ID\n";
+                std::cerr << "Broyken! Pipe not this ID-" << vvodID << ", NO delete\n";
             }
             break;
         }
+        std::cerr << "HeBepH BBoD. ERROR!!!\n";
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
@@ -35,13 +38,16 @@ void deleteKCID(std::map<int, KC>& kcs)
             if (kcs.erase(vvodID) == 1)
             {
                 std::cout << "KC" << vvodID << "delete\n";
+                std::cerr << "KC delete! KcID: " << vvodID << "\n";
             }
             else
             {
                 std::cout << "KC not this ID\n";
+                std::cerr << "Broyken! KC not this ID-" << vvodID <<", NO delete\n";
             }
             break;
         }
+        std::cerr << "HeBepH BBoD. ERROR!!!\n";
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
@@ -78,6 +84,11 @@ void readconsolkc(KC& kc)
     std::cout << "\nRead name KC: ";
     std::cin.ignore(10000, '\n');
     std::getline(std::cin, kc.nameKC);
+    while (kc.nameKC.empty())
+    {
+        std::cout << "NO! Kc name pusto! Read: ";
+        std::getline(std::cin, kc.nameKC);
+    }
 
     std::cout << "\nRead Kol-vo ZEH in KC: ";
     while (!(std::cin >> kc.kolvozehKC) || (kc.kolvozehKC <= 0) || (std::cin.peek() != '\n'))
@@ -101,7 +112,11 @@ void readconsolpipe(Pipe& pipe)
     std::cout << "\nRead Name Pipe: ";
     std::cin.ignore(10000, '\n');
     std::getline(std::cin, pipe.namepipe);
-
+    while (pipe.namepipe.empty())
+    {
+        std::cout << "NO! Name Pipe pusto! Read: ";
+        std::getline(std::cin, pipe.namepipe);
+    }
     std::cout << "\nRead dlina(km) pipe: ";
     while (!(std::cin >> pipe.dlinapipe) || (pipe.dlinapipe <= 0) || (std::cin.peek() != '\n'))
     {
@@ -194,6 +209,8 @@ void openfileKC(std::ifstream& fin, KC& kc)
     fin >> rabot;
     fin >> kc.clasKC;
     fin.ignore(10000, '\n');
+    if (rabot < 0 || rabot > kc.kolvozehKC)
+        fin.setstate(std::ios::failbit);
     kc.Setzehrabot(rabot);
 }
 
@@ -265,6 +282,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
         }
 
         found = findPipesByName(pipes, name);
+        std::cerr << "Poisk Pipe for Name: " << name << ", found: " << found.size() << "\n";
     }
     else
     {
@@ -283,6 +301,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
         }
 
         found = findPipeRemont(pipes, remont == 1);
+        std::cerr << "Poisk Pipe for Remont: " << remont << ", found: " << found.size() << "\n";
     }
 
     if (found.empty())
@@ -425,6 +444,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
         for (int id : selected)
         {
             pipes.at(id).SetRemontpipe(remont == 1);
+            std::cerr << "Pipe changed! ID: " << id << " Remont: " << remont << "\n";
         }
 
         std::cout << "Changed Pipes: " << selected.size() << "\n";
@@ -434,6 +454,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
         for (int id : selected)
         {
             pipes.erase(id);
+            std::cerr << "Pipe deleted! ID: " << id << "\n";
         }
 
         std::cout << "Deleted Pipes: " << selected.size() << "\n";
@@ -518,6 +539,7 @@ void lookKC(std::map<int, KC>& kcs)
         }
 
         found = findKCByName(kcs, name);
+        std::cerr << "Poisk KC for Name: " << name << ", found: " << found.size() << "\n";
     }
     else
     {
@@ -536,6 +558,7 @@ void lookKC(std::map<int, KC>& kcs)
         }
 
         found = findKCByProstoi(kcs, procent);
+        std::cerr << "Poisk KC for procent rabot: " << procent << ", found: " << found.size() << "\n";
     }
 
     if (found.empty())
@@ -613,11 +636,15 @@ void lookKC(std::map<int, KC>& kcs)
     if (action == '1')
     {
         redactkc(kcs.at(vvodID));
+
         std::cout << "KC changed!\n";
+        std::cerr << "KC changed! ID: " << vvodID << " Working: " << kcs.at(vvodID).Getzehrabot() << "\n";
     }
     else
     {
         kcs.erase(vvodID);
+
         std::cout << "KC deleted!\n";
+        std::cerr << "KC deleted! ID: " << vvodID << "\n";
     }
 }

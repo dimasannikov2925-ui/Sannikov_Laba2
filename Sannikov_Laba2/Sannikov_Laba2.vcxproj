@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KC.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Pipe.h" />
   </ItemGroup>
