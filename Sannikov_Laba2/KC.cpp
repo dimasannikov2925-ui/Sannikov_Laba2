@@ -11,3 +11,12 @@ int KC::Getzehrabot() const
 {
     return zehrabotKC;
 }
+std::ostream& operator<<(std::ostream& out, const KC& kc)
+{
+    out << "Name: " << kc.nameKC << "\n";
+    out << "Kol-vo zehov: " << kc.kolvozehKC << "\n";
+    out << "Kol-vo zehov v rabote: " << kc.Getzehrabot() << "\n";
+    out << "Class: " << kc.clasKC << "\n";
+
+    return out;
+}

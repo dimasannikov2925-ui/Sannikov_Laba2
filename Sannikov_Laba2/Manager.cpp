@@ -1,7 +1,7 @@
 #include "Manager.h"
 #include <iostream>
 
-void  deletePipeID(std::map<int, Pipe>& pipes)
+void  deletePipeID(std::unordered_map<int, Pipe>& pipes)
 {
     int vvodID;
     while (true)
@@ -9,25 +9,26 @@ void  deletePipeID(std::map<int, Pipe>& pipes)
         std::cout << "HoMep ID: ";
         if ((std::cin >> vvodID) && (vvodID > 0) && (std::cin.peek() == '\n'))
         {
-            if (pipes.erase(vvodID) == 1)
+            std::cerr << vvodID << "\n";
+            if (deleteByID(pipes, vvodID))
             {
                 std::cout << "Pipe" << vvodID << "delete\n";
-                std::cerr << "Pipe delete! PipeID: " << vvodID << "\n";
+                
             }
             else
             {
                 std::cout << "Pipe not this ID\n";
-                std::cerr << "Broyken! Pipe not this ID-" << vvodID << ", NO delete\n";
+                
             }
             break;
         }
-        std::cerr << "HeBepH BBoD. ERROR!!!\n";
+        
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
 }
 
-void deleteKCID(std::map<int, KC>& kcs)
+void deleteKCID(std::unordered_map<int, KC>& kcs)
 {
     int vvodID;
     while (true)
@@ -35,19 +36,20 @@ void deleteKCID(std::map<int, KC>& kcs)
         std::cout << "HoMep ID: ";
         if ((std::cin >> vvodID) && (vvodID > 0) && (std::cin.peek() == '\n'))
         {
-            if (kcs.erase(vvodID) == 1)
+            std::cerr << vvodID << "\n";
+            if (deleteByID(kcs, vvodID))
             {
                 std::cout << "KC" << vvodID << "delete\n";
-                std::cerr << "KC delete! KcID: " << vvodID << "\n";
+                
             }
             else
             {
                 std::cout << "KC not this ID\n";
-                std::cerr << "Broyken! KC not this ID-" << vvodID <<", NO delete\n";
+               
             }
             break;
         }
-        std::cerr << "HeBepH BBoD. ERROR!!!\n";
+
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
@@ -63,6 +65,7 @@ void redactpipe(Pipe& pipe)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    std::cerr << remont << "\n";
     pipe.SetRemontpipe(remont);
 }
 void redactkc(KC& kc)
@@ -75,6 +78,7 @@ void redactkc(KC& kc)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    std::cerr << rabot << "\n";
     kc.Setzehrabot(rabot);
 }
 
@@ -89,7 +93,7 @@ void readconsolkc(KC& kc)
         std::cout << "NO! Kc name pusto! Read: ";
         std::getline(std::cin, kc.nameKC);
     }
-
+    std::cerr << kc.nameKC << "\n";
     std::cout << "\nRead Kol-vo ZEH in KC: ";
     while (!(std::cin >> kc.kolvozehKC) || (kc.kolvozehKC <= 0) || (std::cin.peek() != '\n'))
     {
@@ -97,7 +101,7 @@ void readconsolkc(KC& kc)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
-
+    std::cerr << kc.kolvozehKC << "\n";
     redactkc(kc);
     std::cout << "\nRead Class KC: ";
     while (!(std::cin >> kc.clasKC) || (kc.clasKC <= 0) || (std::cin.peek() != '\n'))
@@ -106,6 +110,7 @@ void readconsolkc(KC& kc)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    std::cerr << kc.clasKC << "\n";
 }
 void readconsolpipe(Pipe& pipe)
 {
@@ -117,6 +122,7 @@ void readconsolpipe(Pipe& pipe)
         std::cout << "NO! Name Pipe pusto! Read: ";
         std::getline(std::cin, pipe.namepipe);
     }
+    std::cerr << pipe.namepipe << "\n";
     std::cout << "\nRead dlina(km) pipe: ";
     while (!(std::cin >> pipe.dlinapipe) || (pipe.dlinapipe <= 0) || (std::cin.peek() != '\n'))
     {
@@ -124,6 +130,7 @@ void readconsolpipe(Pipe& pipe)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    std::cerr << pipe.dlinapipe <<  "\n";
     std::cout << "\nRead diametr(mm) pipe: ";
     while (!(std::cin >> pipe.mmpipe) || (pipe.mmpipe <= 0) || (std::cin.peek() != '\n'))
     {
@@ -131,35 +138,25 @@ void readconsolpipe(Pipe& pipe)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    std::cerr << pipe.mmpipe << "\n";
     redactpipe(pipe);
 }
 void showpipe(Pipe& pipe)
 {
-    std::cout << "\n---Pipe---\n" << "Name:" << pipe.namepipe << "\n";
-    std::cout << "Dlina(km): " << pipe.dlinapipe << "\n";
-    std::cout << "Diametr(mm): " << pipe.mmpipe << "\n";
-    std::cout << "V remonte (1-Yes, 0-No): " << pipe.GetRemontpipe() << "\n";
+    std::cout << pipe;
 }
 void showkc(KC& kc)
 {
-    std::cout << "\n---KC---\n" << "Name: " << kc.nameKC << "\n";
-    std::cout << "Kol-vo zehov:" << kc.kolvozehKC << "\n";
-    std::cout << "Kol-vo zehov B PaboTe :" << kc.Getzehrabot() << "\n";
-    std::cout << "Class CTaHzuu:" << kc.clasKC << "\n";
+    std::cout << kc;
 }
 void menu()
 {
     std::cout << "\n1.Add Pipe\n";
     std::cout << "2.Add KC\n";
-    std::cout << "3.Chek objects\n";
-    std::cout << "4.Redact Pipe\n";
-    std::cout << "5.Redact KC\n";
-    std::cout << "6.Save\n";
-    std::cout << "7.Open\n";
-    std::cout << "8.Delete Pipe\n";
-    std::cout << "9.Delete KC\n";
-    std::cout << "a. Look Pipes\n";
-    std::cout << "b. Look KCs\n";
+    std::cout << "3.Look Pipes\n";
+    std::cout << "4.Look Kc\n";
+    std::cout << "5.Save\n";
+    std::cout << "6.Open\n";
     std::cout << "0.Exit\n";
 }
 void savefilepipe(std::ofstream& fout, Pipe& pipe, int id)
@@ -214,7 +211,7 @@ void openfileKC(std::ifstream& fin, KC& kc)
     kc.Setzehrabot(rabot);
 }
 
-std::vector<int> findPipesByName(const std::map<int, Pipe>& pipes, const std::string& name)
+std::vector<int> findPipesByName(const std::unordered_map<int, Pipe>& pipes, const std::string& name)
 {
     std::vector<int> found;
     for (const auto& item : pipes)
@@ -227,7 +224,7 @@ std::vector<int> findPipesByName(const std::map<int, Pipe>& pipes, const std::st
     return found;
 }
 
-std::vector<int> findPipeRemont(const std::map<int, Pipe>& pipes, bool remont)
+std::vector<int> findPipeRemont(const std::unordered_map<int, Pipe>& pipes, bool remont)
 {
     std::vector<int> found;
     for (const auto& item : pipes)
@@ -240,7 +237,7 @@ std::vector<int> findPipeRemont(const std::map<int, Pipe>& pipes, bool remont)
     return found;
 }
 
-void lookPipes(std::map<int, Pipe>& pipes)
+void lookPipes(std::unordered_map<int, Pipe>& pipes)
 {
     if (pipes.empty())
     {
@@ -264,7 +261,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
-
+    std::cerr << vvod << "\n";
     std::vector<int> found;
 
     if (vvod == '1')
@@ -274,15 +271,16 @@ void lookPipes(std::map<int, Pipe>& pipes)
         std::cin.ignore(10000, '\n');
         std::cout << "Input Pipe name: ";
         std::getline(std::cin, name);
+        std::cerr << name << "\n";
 
         if (name.empty())
         {
             std::cout << "Name empty!\n";
             return;
         }
-
+        std::cerr << name << "\n";
         found = findPipesByName(pipes, name);
-        std::cerr << "Poisk Pipe for Name: " << name << ", found: " << found.size() << "\n";
+        
     }
     else
     {
@@ -299,9 +297,9 @@ void lookPipes(std::map<int, Pipe>& pipes)
             std::cin.clear();
             std::cin.ignore(10000, '\n');
         }
-
+        std::cerr << remont << "\n";
         found = findPipeRemont(pipes, remont == 1);
-        std::cerr << "Poisk Pipe for Remont: " << remont << ", found: " << found.size() << "\n";
+        
     }
 
     if (found.empty())
@@ -316,9 +314,9 @@ void lookPipes(std::map<int, Pipe>& pipes)
         showpipe(pipes.at(id));
     }
 
-    std::cout << "\n1.Redact found Pipes\n";
-    std::cout << "2.Delete found Pipes\n";
-    std::cout << "0.Back\n";
+    std::cout << "\n1.Delete found Pipes\n";
+    std::cout << "2.Redact found Pipes\n";
+    std::cout << "0.Back\n";;
 
     char action;
 
@@ -333,12 +331,12 @@ void lookPipes(std::map<int, Pipe>& pipes)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
-
+    std::cerr << action << "\n";
     if (action == '0')
         return;
 
-    std::cout << "\n1.All found Pipes\n";
-    std::cout << "2.Choose Pipes by ID\n";
+    std::cout << "\n1.Choose Pipes by ID\n";
+    std::cout << "2.All found Pipes\n";
 
     char choice;
 
@@ -353,10 +351,10 @@ void lookPipes(std::map<int, Pipe>& pipes)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
-
+    std::cerr << choice << "\n";
     std::vector<int> selected;
 
-    if (choice == '1')
+    if (choice == '2')
     {
         selected = found;
     }
@@ -379,7 +377,11 @@ void lookPipes(std::map<int, Pipe>& pipes)
             }
 
             if (vvodID == 0)
+            {
+                std::cerr << vvodID << "\n";
                 break;
+            }
+                
 
             bool est = false;
 
@@ -414,7 +416,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
                 std::cout << "ID already selected!\n";
                 continue;
             }
-
+            std::cerr << vvodID << "\n";
             selected.push_back(vvodID);
         }
     }
@@ -425,7 +427,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
         return;
     }
 
-    if (action == '1')
+    if (action == '2')
     {
         int remont;
 
@@ -440,11 +442,11 @@ void lookPipes(std::map<int, Pipe>& pipes)
             std::cin.clear();
             std::cin.ignore(10000, '\n');
         }
-
+        std::cerr << remont << "\n";
         for (int id : selected)
         {
             pipes.at(id).SetRemontpipe(remont == 1);
-            std::cerr << "Pipe changed! ID: " << id << " Remont: " << remont << "\n";
+            
         }
 
         std::cout << "Changed Pipes: " << selected.size() << "\n";
@@ -453,8 +455,8 @@ void lookPipes(std::map<int, Pipe>& pipes)
     {
         for (int id : selected)
         {
-            pipes.erase(id);
-            std::cerr << "Pipe deleted! ID: " << id << "\n";
+            deleteByID(pipes, id);
+            
         }
 
         std::cout << "Deleted Pipes: " << selected.size() << "\n";
@@ -462,7 +464,7 @@ void lookPipes(std::map<int, Pipe>& pipes)
 }
 
 
-std::vector<int> findKCByName(const std::map<int, KC>& kcs, const std::string& name)
+std::vector<int> findKCByName(const std::unordered_map<int, KC>& kcs, const std::string& name)
 {
     std::vector<int> found;
 
@@ -477,7 +479,7 @@ std::vector<int> findKCByName(const std::map<int, KC>& kcs, const std::string& n
     return found;
 }
 
-std::vector<int> findKCByProstoi(const std::map<int, KC>& kcs, int procent)
+std::vector<int> findKCByProstoi(const std::unordered_map<int, KC>& kcs, int procent)
 {
     std::vector<int> found;
 
@@ -497,7 +499,7 @@ std::vector<int> findKCByProstoi(const std::map<int, KC>& kcs, int procent)
     return found;
 }
 
-void lookKC(std::map<int, KC>& kcs)
+void lookKC(std::unordered_map<int, KC>& kcs)
 {
     if (kcs.empty())
     {
@@ -509,7 +511,7 @@ void lookKC(std::map<int, KC>& kcs)
     std::cout << "2.Look KC by % prostoi\n";
 
     char vvod;
-
+    
     while (true)
     {
         std::cout << "Input 1 or 2: ";
@@ -521,7 +523,7 @@ void lookKC(std::map<int, KC>& kcs)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
-
+    std::cerr << vvod << "\n";
     std::vector<int> found;
 
     if (vvod == '1')
@@ -531,15 +533,16 @@ void lookKC(std::map<int, KC>& kcs)
         std::cin.ignore(10000, '\n');
         std::cout << "Input KC name: ";
         std::getline(std::cin, name);
+        std::cerr << name << "\n";
 
         if (name.empty())
         {
             std::cout << "Name empty!\n";
             return;
         }
-
+        std::cerr << name << "\n";
         found = findKCByName(kcs, name);
-        std::cerr << "Poisk KC for Name: " << name << ", found: " << found.size() << "\n";
+        
     }
     else
     {
@@ -556,9 +559,9 @@ void lookKC(std::map<int, KC>& kcs)
             std::cin.clear();
             std::cin.ignore(10000, '\n');
         }
-
+        std::cerr << procent << "\n";
         found = findKCByProstoi(kcs, procent);
-        std::cerr << "Poisk KC for procent rabot: " << procent << ", found: " << found.size() << "\n";
+        
     }
 
     if (found.empty())
@@ -581,8 +584,9 @@ void lookKC(std::map<int, KC>& kcs)
         }
     }
 
-    std::cout << "\n1.Redact KC\n";
-    std::cout << "2.Delete KC\n";
+
+    std::cout << "\n1.Delete KC\n";
+    std::cout << "2.Redact KC\n";
     std::cout << "0.Back\n";
 
     char action;
@@ -599,52 +603,91 @@ void lookKC(std::map<int, KC>& kcs)
         std::cin.ignore(10000, '\n');
     }
 
+    std::cerr << action << "\n";
+
     if (action == '0')
         return;
 
-    int vvodID;
+    std::cout << "\n1.Choose KC by ID\n";
+    std::cout << "2.All found KC\n";
+
+    char choice;
 
     while (true)
     {
-        std::cout << "Input ID KC: ";
+        std::cout << "Input: ";
 
-        if (!(std::cin >> vvodID) || vvodID <= 0 || std::cin.peek() != '\n')
-        {
-            std::cout << "Wrong ID!\n";
-            std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            continue;
-        }
-
-        bool est = false;
-
-        for (int id : found)
-        {
-            if (id == vvodID)
-            {
-                est = true;
-                break;
-            }
-        }
-
-        if (est)
+        if ((std::cin >> choice) && (choice == '1' || choice == '2') && std::cin.peek() == '\n')
             break;
 
-        std::cout << "No such ID among found KC!\n";
+        std::cout << "Input 1 or 2!\n";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
     }
 
-    if (action == '1')
-    {
-        redactkc(kcs.at(vvodID));
+    std::cerr << choice << "\n";
 
-        std::cout << "KC changed!\n";
-        std::cerr << "KC changed! ID: " << vvodID << " Working: " << kcs.at(vvodID).Getzehrabot() << "\n";
+    std::vector<int> selected;
+
+    if (choice == '2')
+    {
+        selected = found;
     }
     else
     {
-        kcs.erase(vvodID);
+        int vvodID;
 
-        std::cout << "KC deleted!\n";
-        std::cerr << "KC deleted! ID: " << vvodID << "\n";
+        while (true)
+        {
+            std::cout << "Input ID KC: ";
+
+            if (!(std::cin >> vvodID) || vvodID <= 0 || std::cin.peek() != '\n')
+            {
+                std::cout << "Wrong ID!\n";
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+                continue;
+            }
+
+            bool est = false;
+
+            for (int id : found)
+            {
+                if (id == vvodID)
+                {
+                    est = true;
+                    break;
+                }
+            }
+
+            if (est)
+            {
+                std::cerr << vvodID << "\n";
+                selected.push_back(vvodID);
+                break;
+            }
+
+            std::cout << "No such ID among found KC!\n";
+        }
+    }
+
+    if (action == '2')
+    {
+        for (int id : selected)
+        {
+            std::cout << "ID KC: " << id << "\n";
+            redactkc(kcs.at(id));
+            std::cout << "KC changed!\n";
+        }
+    }
+    else
+    {
+        for (int id : selected)
+        {
+            deleteByID(kcs, id);
+        }
+
+        std::cout << "Deleted KC: " << selected.size() << "\n";
     }
 }
+

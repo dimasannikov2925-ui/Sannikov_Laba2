@@ -14,3 +14,4 @@ public:
     void SetRemontpipe(bool peremennaya);
     bool GetRemontpipe() const;
 };
+std::ostream& operator<<(std::ostream& out, const Pipe& pipe);

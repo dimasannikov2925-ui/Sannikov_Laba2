@@ -14,3 +14,4 @@ public:
     void Setzehrabot(int perzehrab);
     int Getzehrabot() const;
 };
+std::ostream& operator<<(std::ostream& out, const KC& kc);
